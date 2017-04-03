@@ -16,12 +16,32 @@ public:
 	node *lastPointer;
 
 	intSet() { /*pointer = */lastPointer = NULL; }
-	void addEleAtTheEnd(int aInput);
+	void addNodeAtTheEnd(int aInput);
+	void display();
 	
 };
 
+void intSet::display()
+{
+	struct node *s;
+	if(lastPointer == NULL)
+	{
+		std::cout << "List is empty" << std::endl;
+		return;
+	}
+	
+	s = lastPointer ->nextPointer;
+	std::cout << "List" <<std::endl;
+	while(s != lastPointer)
+	{
+		std::cout << s->a << "->";
+		s = s->nextPointer;
+	}
+	std::cout << s->a << std::endl;
+	
+}
 
-void intSet::addEleAtTheEnd(int aInput)
+void intSet::addNodeAtTheEnd(int aInput)
 {
 	struct node *temp = new (struct node);
 	temp -> a = aInput;
@@ -34,14 +54,10 @@ void intSet::addEleAtTheEnd(int aInput)
 	}
 	else
 	{
-		
-		temp -> nextPointer = lastPointer;
+		temp -> nextPointer = lastPointer -> nextPointer;
 		lastPointer -> nextPointer = temp;
 		lastPointer = temp;
 	}
-		
-
-	
 }
 
 
@@ -49,6 +65,7 @@ int main()
 {
 bool running = true;
 char switchButton;
+int value;
 
 intSet A;
 
@@ -58,8 +75,19 @@ intSet A;
 		switch(switchButton)
 		{
 			case 'a':
-			
-			
+			std::cout << "Podaj element do dodania:";
+			std::cin >> value;
+			A.addNodeAtTheEnd(value);			
+			break;	
+
+			case 'd':
+			A.display();
+			break;
+		
+			case 'p':
+			running = false;
+			break;
+						
 		}
 
 	}
