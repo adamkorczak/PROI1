@@ -25,8 +25,34 @@ public:
 	void deleteNodeWithValue(int value);
 	void deleteNodeWithValueInRange(int low, int high);
 	void display();
+
+	intSet operator+(const intSet &t) const;
+
 		
 };
+
+intSet intSet::operator+(const intSet &t) const
+{
+	intSet temp =*this;	
+	intSet buffor;
+
+	if(temp.lastPointer== NULL)
+	{	
+		temp.lastPointer = t.lastPointer;
+		t.lastPointer ->nextPointer = temp.lastPointer;
+	}
+	else
+	{
+		buffor.lastPointer = temp.lastPointer ->nextPointer;
+		temp.lastPointer ->nextPointer = t.lastPointer ->nextPointer;
+		t.lastPointer ->nextPointer = buffor.lastPointer; 
+		temp.lastPointer = t.lastPointer;
+	}
+	//delete buffor.lastPointer;
+	return temp;	
+	
+}
+
 
 void intSet::deleteNodeWithValueInRange(int low, int high)
 {
@@ -366,7 +392,7 @@ char switchButton;
 int value, elementValue;
 srand(time(NULL));
 
-intSet A;
+intSet A,B,C;
 
 	while(running)
 	{	std::cin >> switchButton;
@@ -379,7 +405,12 @@ intSet A;
 			while(value--)
 			{
 			A.addNodeAtTheEnd(std::rand()%100);
+			B.addNodeAtTheEnd(std::rand()%100);
 			}			
+			break;
+
+			case 'h':
+			(A+B);			
 			break;
 
 			case 'a':
@@ -432,6 +463,9 @@ intSet A;
 
 			case 'd':
 			A.display();
+			B.display();
+			C = A+B;
+			C.display();
 			break;
 		
 			case 'p':
