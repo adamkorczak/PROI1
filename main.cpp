@@ -11,12 +11,13 @@ class intSet
 		int a;
 		struct node *nextPointer;
 	};
-	
+	int size;
+
 public:
 	
 	node *lastPointer;
 
-	intSet() { lastPointer = NULL; }
+	intSet() { lastPointer = NULL; size = 0; }
 	intSet(const intSet &t);
 
 	void addNodeAtTheEnd(int aInput);
@@ -27,12 +28,200 @@ public:
 	void deleteNodeWithValue(int value);
 	void deleteNodeWithValueInRange(int low, int high);
 	void display();
+	int checkSize();
+	void deleteTheSameValue();
+	int getValue(int index);
+	void setValueInElement(int aInput, int index);
 
 	intSet operator+(const intSet &t) const;
 	intSet operator-(const intSet &t) const;
 	intSet &operator=(const intSet &t);
+
+
+	friend bool operator>(const intSet &t1, const intSet &t2);
+	friend bool operator<(const intSet &t1, const intSet &t2);
+	friend bool operator>=(const intSet &t1, const intSet &t2);
+	friend bool operator<=(const intSet &t1, const intSet &t2);
+	friend std::ostream& operator<<(std::ostream &out, const intSet &t);
+	friend std::istream& operator>>(std::istream &in, const intSet &t);
 		
 };
+
+
+std::istream& operator>>(std::istream &in,intSet &t)
+{
+int index, value;
+	
+	in >> index;
+	in >> value;
+	t.setValueInElement(value, index);	
+
+	return in;
+}
+
+std::ostream& operator<<(std::ostream& out, const intSet& t)
+{
+	intSet::node *s = t.lastPointer;
+	if(s == NULL)
+	{
+		out << "List is empty" ;
+		return out;
+	}
+	
+	s = t.lastPointer ->nextPointer;
+	out << "List" << std::endl;
+	
+	while(s != t.lastPointer)
+	{
+		out << s->a << "->";
+		s = s->nextPointer;
+	}
+	out << s->a ;
+
+return out;
+	
+}
+
+
+void intSet::setValueInElement(int aInput, int index)
+{
+		if(lastPointer == NULL)
+	{
+		std::cout << "There is no list, firstly add any node" <<std::endl;
+		return;
+	}
+
+	int i = 1;
+	struct node *buffor;
+		buffor = lastPointer ->nextPointer;
+	
+		while(i++ != index)
+		{	
+			buffor = buffor ->nextPointer;
+			//std::cout << buffor ->a << " i = " << i << std::endl;
+			if(buffor == lastPointer->nextPointer)
+			{
+			std::cout << "The list is too short" << std::endl;
+			return;
+			}
+		}
+
+	buffor ->a = aInput;
+
+	return;
+}
+
+int intSet::getValue(int index)
+{
+	if(lastPointer == NULL)
+	{
+		std::cout << "There is no list, firstly add any node" <<std::endl;
+		return -1;
+	}
+
+	int i = 1;
+	struct node *buffor;
+		buffor = lastPointer ->nextPointer;
+	
+		while(i++ != index)
+		{	
+			buffor = buffor ->nextPointer;
+			//std::cout << buffor ->a << " i = " << i << std::endl;
+			if(buffor == lastPointer->nextPointer)
+			{
+			std::cout << "The list is too short" << std::endl;
+			return -1;
+			}
+		}
+
+	return buffor->a;
+}
+
+
+bool operator>(const intSet &t1, const intSet &t2)
+{
+	return t1.size >  t2.size;
+}
+
+bool operator<(const intSet &t1, const intSet &t2)
+{
+	return t1.size < t2.size;
+}
+
+bool operator>=(const intSet &t1, const intSet &t2)
+{
+	return t1.size >= t2.size;
+}
+
+bool operator<=(const intSet &t1, const intSet &t2)
+{
+	return t1.size <= t2.size;
+}
+
+
+void intSet::deleteTheSameValue()
+{
+	if(lastPointer == NULL)
+	{
+		std::cout << "There is no list, firstly add any node" <<std::endl;
+		return;
+	}
+	if(lastPointer ->nextPointer ==lastPointer)
+	{
+		std::cout << "There is only one node, create at least two nodes to use this function " <<std::endl;
+		return;
+	}
+	
+	struct node *buff = lastPointer ->nextPointer;
+	struct node *iter;
+
+	while(buff != lastPointer)
+	{	
+		iter = buff ->nextPointer;
+		while(iter != lastPointer ->nextPointer)
+		{
+			if(buff ->a == iter ->a)
+			this->deleteNodeWithValue(buff ->a);
+
+			iter = iter ->nextPointer;
+		}
+		buff = buff ->nextPointer;
+	}
+
+	return;
+}
+
+
+int intSet::checkSize()
+{	size = 0;
+	
+	if(lastPointer == NULL)
+	{
+		size = 0;
+		std::cout << "There is no list, firstly add any node" <<std::endl;
+		return size;
+	}
+	struct node *buff = lastPointer ->nextPointer;
+	
+	if(lastPointer ->nextPointer == lastPointer)
+	{
+		size = 1;
+		return size;
+	}
+
+	while(buff != lastPointer)
+	{
+		size++;
+		buff = buff ->nextPointer;
+		if(buff == lastPointer)
+		{
+			size++;
+		}	
+	}
+
+return size;
+}
+
 
 intSet &intSet::operator=(const intSet &t)
 {
@@ -138,6 +327,7 @@ intSet intSet::operator+(const intSet &t) const
 
 intSet::intSet(const intSet &t)
 {	
+	size = 0;
 	lastPointer = NULL;	
 	struct node *buffor;
 	buffor = t.lastPointer ->nextPointer;
@@ -548,11 +738,15 @@ intSet A,B,C;
 			break;
 
 			case 'q':
+			std::cout << "Podaj indeks elementu oraz wartosc elementu oddzielajac obie wielkosci spacja:";
+			std::cin >> A;
+			std::cout <<A << std::endl;			
+			break;
+
+			case 'f':
 			std::cout << "Podaj indeks elementu:";
 			std::cin >> elementValue;
-			std::cout << "Podaj element:";
-			std::cin >> value;
-			A.addNodeAfterIndex(value, elementValue);			
+			std::cout << A.getValue(elementValue) <<std::endl;			
 			break;
 
 			case 't':
@@ -564,13 +758,23 @@ intSet A,B,C;
 			C.display();			
 			break;
 
+			case 's':
+			A.checkSize();
+			B.checkSize();
+			if(A >= B)
+			std::cout <<"dziala11"<<std::endl;
+			if(A<B)
+			std::cout <<"dziala2" << std::endl;			
+			break;
+
 			case 'd':
-			A.display();
-			B.display();
+			std::cout << A << std::endl;
+			std::cout << B << std::endl;
 			//C = A+B;
 			//A.display();
 			//B.display();
 			//C.display();
+			std::cout << A.checkSize() << std::endl;
 			break;
 		
 			case 'e':
