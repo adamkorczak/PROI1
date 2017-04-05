@@ -17,6 +17,8 @@ public:
 	node *lastPointer;
 
 	intSet() { lastPointer = NULL; }
+	intSet(const intSet &t);
+
 	void addNodeAtTheEnd(int aInput);
 	void addNodeAtTheBegining(int aInput);
 	void addNodeAfterValue(int aInput, int valueInput);
@@ -27,32 +29,130 @@ public:
 	void display();
 
 	intSet operator+(const intSet &t) const;
-
+	intSet operator-(const intSet &t) const;
+	intSet &operator=(const intSet &t);
 		
 };
 
+intSet &intSet::operator=(const intSet &t)
+{
+	struct node *buff;
+	if(lastPointer != NULL)
+	{
+		buff = lastPointer ->nextPointer;
+		while(buff != lastPointer)
+		{
+			this->deleteNodeAtTheIndex(1);
+			buff = lastPointer ->nextPointer;		
+		}
+		if(buff == lastPointer)
+		{
+			this->deleteNodeAtTheIndex(1);		
+		}
+		
+	}	
+
+	buff = t.lastPointer ->nextPointer;
+
+		while(buff != t.lastPointer)
+		{
+			this->addNodeAtTheEnd(buff ->a);
+			buff = buff ->nextPointer;
+		}
+		if(buff == t.lastPointer)
+		{
+			this->addNodeAtTheEnd(buff ->a);
+		}
+
+	return *this ;
+
+}
+
+
+intSet intSet::operator-(const intSet &t) const
+{
+	intSet *buffor = new intSet(*this);
+	struct node *tempS, *temp;
+	tempS = buffor->lastPointer ->nextPointer;
+	temp = t.lastPointer ->nextPointer;
+
+	while(tempS != buffor->lastPointer)
+	{	
+		temp = t.lastPointer ->nextPointer;
+		while(temp != t.lastPointer)
+		{
+			if(temp ->a == tempS ->a)
+			{
+				buffor->deleteNodeWithValue(temp ->a);
+			}
+			temp = temp ->nextPointer;
+			if((temp == t.lastPointer) && (temp ->a == tempS ->a))
+			{
+				buffor->deleteNodeWithValue(temp ->a);
+			}
+			
+		}
+		tempS = tempS ->nextPointer;
+		if(tempS == buffor->lastPointer)
+		{
+			while(temp != t.lastPointer)
+			{
+				if(temp ->a == tempS ->a)
+				{
+					buffor->deleteNodeWithValue(temp ->a);
+				}
+				temp = temp ->nextPointer;
+				if((temp == t.lastPointer) && (temp ->a == tempS ->a))
+				{
+					buffor->deleteNodeWithValue(temp ->a);
+				}
+			
+			}
+
+		}
+		
+	}
+	return *buffor;
+
+}
+
 intSet intSet::operator+(const intSet &t) const
 {
-	intSet temp =*this;	
-	intSet buffor;
-
-	if(temp.lastPointer== NULL)
-	{	
-		temp.lastPointer = t.lastPointer;
-		t.lastPointer ->nextPointer = temp.lastPointer;
-	}
-	else
+	intSet *buffor = new intSet(*this);
+	struct node *temp;
+	temp = t.lastPointer ->nextPointer;
+	
+	while(temp != t.lastPointer)
 	{
-		buffor.lastPointer = temp.lastPointer ->nextPointer;
-		temp.lastPointer ->nextPointer = t.lastPointer ->nextPointer;
-		t.lastPointer ->nextPointer = buffor.lastPointer; 
-		temp.lastPointer = t.lastPointer;
+		buffor->addNodeAtTheEnd(temp ->a);
+		temp = temp ->nextPointer;
 	}
-	//delete buffor.lastPointer;
-	return temp;	
+	if(temp == t.lastPointer)
+	{
+		buffor->addNodeAtTheEnd(temp ->a);
+	}	
+
+	return *buffor;	
 	
 }
 
+intSet::intSet(const intSet &t)
+{	
+	lastPointer = NULL;	
+	struct node *buffor;
+	buffor = t.lastPointer ->nextPointer;
+
+		while(buffor != t.lastPointer)
+		{
+			this->addNodeAtTheEnd(buffor ->a);
+			buffor = buffor ->nextPointer;
+		}
+		if(buffor == t.lastPointer)
+		{
+			this->addNodeAtTheEnd(buffor ->a);
+		}
+	
+}
 
 void intSet::deleteNodeWithValueInRange(int low, int high)
 {
@@ -375,6 +475,7 @@ void intSet::display()
 	
 	s = lastPointer ->nextPointer;
 	std::cout << "List" <<std::endl;
+	//std::cout << s->a <<std::endl;
 	while(s != lastPointer)
 	{
 		std::cout << s->a << "->";
@@ -410,7 +511,8 @@ intSet A,B,C;
 			break;
 
 			case 'h':
-			(A+B);			
+			C = intSet(A);
+			//C.display();		
 			break;
 
 			case 'a':
@@ -458,16 +560,29 @@ intSet A,B,C;
 			std::cin >> elementValue;
 			std::cout << "Podaj gorna granice przedzialu:";
 			std::cin >> value;
-			A.deleteNodeWithValueInRange(elementValue, value);			
+			C.deleteNodeWithValueInRange(elementValue, value);
+			C.display();			
 			break;
 
 			case 'd':
 			A.display();
 			B.display();
-			C = A+B;
-			C.display();
+			//C = A+B;
+			//A.display();
+			//B.display();
+			//C.display();
 			break;
 		
+			case 'e':
+			A.display();
+			B.display();
+			C = A;
+			B = A;
+			C.display();
+			A.display();
+			B.display();
+			break;
+
 			case 'p':
 			running = false;
 			break;
