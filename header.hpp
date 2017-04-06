@@ -1,12 +1,6 @@
 #ifndef header_hpp
 #define header_hpp
 
-#include <iostream>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <cstdlib>
-
 
 class intSet
 {
